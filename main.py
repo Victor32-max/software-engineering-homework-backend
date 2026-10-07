@@ -11,11 +11,8 @@ app = FastAPI()
 # 允许前端访问后端
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[
-        "http://localhost:5173",
-        "http://127.0.0.1:5173",
-    ],
-    allow_credentials=True,
+    allow_origins=["*"],
+    allow_credentials=False,
     allow_methods=["*"],
     allow_headers=["*"],
 )
@@ -189,9 +186,7 @@ def calculate(request: CalculateRequest):
 def get_history():
 
     conn = sqlite3.connect(DB_NAME)
-
     conn.row_factory = sqlite3.Row
-
     cursor = conn.cursor()
 
     cursor.execute("""
@@ -205,7 +200,6 @@ def get_history():
     """)
 
     rows = cursor.fetchall()
-
     conn.close()
 
     return [
@@ -220,7 +214,6 @@ def get_history():
 def delete_history(history_id: int):
 
     conn = sqlite3.connect(DB_NAME)
-
     cursor = conn.cursor()
 
     cursor.execute(
@@ -231,7 +224,6 @@ def delete_history(history_id: int):
     conn.commit()
 
     deleted_count = cursor.rowcount
-
     conn.close()
 
     if deleted_count == 0:
